@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<doc>
+  <field name="id">ppmedrxiv-3911063</field>
+  <field name="bvs">regional</field>
+  <field name="db">PREPRINT-MEDRXIV</field>
+  <field name="instance">regional</field>
+  <field name="collection">09-preprints</field>
+  <field name="typeXml">preprint</field>
+  <field name="la">en</field>
+  <field name="pu">medRxiv</field>
+  <field name="ti">인도태평양 전략과 신남방정책의 협력 방향 (Exploring Convergence between the New Southern Policy and U.S. Indo-Pacific Strategy: From Korea's Perspective)</field>
+  <field name="doi"></field>
+  <field name="ur"></field>
+  <field name="fulltext"></field>
+  <field name="ab"></field>
+  <field name="au"></field>
+  <field name="afiliacao_autor"></field>
+  <field name="entry_date"></field>
+  <field name="da"></field>
+  <field name="version_medrxiv_biorxiv"></field>
+  <field name="license"></field>
+  <field name="type_document_medrxiv_biorxiv"></field>
+  <field name="category_medrxiv_biorxiv"></field>
+</doc>

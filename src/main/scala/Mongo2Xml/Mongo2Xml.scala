@@ -1,9 +1,9 @@
 package Mongo2Xml
 
-import org.mongodb.scala.{Document, bson}
-
+import org.mongodb.scala.Document
 import java.util.Calendar
 import scala.util.{Failure, Success, Try}
+
 
 case class Mongo2Xml_Parameters(xmlDir: String,
                                 database: String,
@@ -19,37 +19,11 @@ class Mongo2Xml {
     Try {
       val mExport: MongoExport = new MongoExport(parameters.database, parameters.collection, parameters.host, parameters.port)
       val docsMongo: Seq[Document] = mExport.findAll
-      createXmlFile(parameters.xmlDir, docsMongo) match {
-        case Success(fileXmlOut) => println(s"\nFILE GENERATED SUCCESSFULLY IN: $fileXmlOut")
+
+      new ZBMedPrePrints().toXml(docsMongo) match {
+        case Success(_) => println(s"\nFILE GENERATED SUCCESSFULLY IN: ${parameters.xmlDir}")
         case Failure(e) => println(s"\nFAILURE TO GENERATE FILE: $e")
       }
-    }
-  }
-
-  def createXmlFile(path_out: String, listDocsMongo: Seq[Document]): Try[String] = {
-    Try {
-      ""
-    }
-  }
-
-  def getHeaders(listDocsMongo: Seq[Document]): Iterable[String] = {
-    val listHeader: Seq[Iterable[String]] = listDocsMongo.map(f => f.map(f => f._1))
-    val headers: Iterable[String] = for {as <- listHeader
-                                         r <- as} yield r
-    headers
-  }
-
-  def bsonValueToString(value: bson.BsonValue): String = {
-    value.getBsonType.getValue match {
-      case 1 ⇒ value.asDouble().getValue.toString
-      case 2 ⇒ value.asString().getValue
-      case 3 ⇒ value.asDocument().toString
-      case 4 ⇒ value.asArray().toString
-      case 5 ⇒ value.asBinary().toString
-      case 7 ⇒ value.asObjectId().getValue.toString
-      case 8 ⇒ value.asBoolean().toString
-      case 9 ⇒ value.asDateTime().toString
-      case _ ⇒ ""
     }
   }
 }

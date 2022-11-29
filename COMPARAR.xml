@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<doc>
+  <field name="id">ppmedrxiv-22282451</field>
+  <field name="bvs">regional</field>
+  <field name="db">PREPRINT-MEDRXIV</field>
+  <field name="instance">regional</field>
+  <field name="collection">09-preprints</field>
+  <field name="typeXml">preprint</field>
+  <field name="la">en</field>
+  <field name="pu">medRxiv</field>
+  <field name="ti">Catch-up Routine Immunization to Restore Childhood Immunization Coverage following COVID-induced Declines in Zamboanga Peninsula, Philippines</field>
+  <field name="doi">10.1101/2022.11.19.22282451</field>
+  <field name="ur">https://medrxiv.org/cgi/content/short/2022.11.19.22282451</field>
+  <field name="ur">https://medrxiv.org/cgi/content/short/2022.09.06.22279606v1.full.pdf</field> //novo campo
+  <field name="fulltext">1</field>
+  <field name="ab">Due to numerous waves of COVID-19 surge and a more focused government initiative to jump-start the COVID-19 vaccination in 2021, routine immunization was neglected in Zamboanga Peninsula, Philippines, ending the year with a fully-immunized coverage of only 59%. To address this, an intensified catch-up immunization campaign was conducted in April-June 2022 among children 0-23 months of age who missed their routine immunizations. A program case study is utilized to describe the catch-up immunization campaign conducted. The target for the catch-up immunization campaign was to vaccinate at least 80% of infants ages 0-23 months who missed any of their routine immunizations schedule. Online microplanning workshops and consultative meetings were conducted in preparation for the campaign. A record review was conducted from data from municipal and provincial health offices and then consolidated at the regional level. The coverage for all antigens at the regional level (all cities, and municipalities combined), was 49-60%, except for inactivated polio vaccine 2 (32%). In other words, approximately half of those children under 23 months who had missed doses got vaccinated during the catch-up vaccination activities. This was a relatively fair turnout of the campaign considering that the local government units are still transitioning to non-COVID health services. To address the immunization gap, the catch-up immunization campaign will continue to be conducted wherein local government unit health workers have already allotted one day every month to conduct house-to-house vaccination activity to track and vaccinate missed children.</field>
+  <field name="au">Mary Germeyn Punzalan</field>
+  <field name="afiliacao_autor">Mary Germeyn Punzalan; Zamboanga City Medical Center</field>
+  <field name="entry_date">20221121</field>
+  <field name="da">202211</field>
+  <field name="version_medrxiv_biorxiv">1</field>
+  <field name="license">cc_by</field>
+  <field name="type_document_medrxiv_biorxiv">PUBLISHAHEADOFPRINT</field>
+  <field name="category_medrxiv_biorxiv">public and global health</field>
+</doc>
