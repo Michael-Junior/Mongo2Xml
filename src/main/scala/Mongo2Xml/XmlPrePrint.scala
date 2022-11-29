@@ -1,11 +1,13 @@
 package Mongo2Xml
 
-import org.mongodb.scala.Document
+import org.mongodb.scala.bson.BsonArray
+import org.mongodb.scala.{Document, bson}
 
 import java.io.BufferedWriter
 import java.nio.file.{Files, Paths}
 import scala.util.{Failure, Success, Try}
 import scala.xml.{Elem, PrettyPrinter, XML}
+import scala.collection.JavaConverters._
 
 
 case class PrePrint (id: String,
@@ -18,10 +20,10 @@ case class PrePrint (id: String,
                      ti: String,
                      doi: String,
                      ur: String,
-                     urPdf: String,                        //Verificar nome desse campo
+                     urPdf: String,
                      fulltext: String,
                      ab: String,
-                     au: String,
+                     au: Seq[String],
                      //afiliacaoAutor: String,             //Não existe o dado
                      entryDate: String,
                      da: String)
@@ -56,11 +58,11 @@ class ZBMedPrePrints{
     val linkPdf: String = doc.getString("pdfLink")
     val fullText: String = if (link.nonEmpty) "1" else ""
     val ab: String = doc.getString("abstract").replace("<", "&lt;").replace(">","&gt;")
-    val au: Seq[String] = Seq("")
+    val au: Seq[String] = doc.get[BsonArray]("authors").get.getValues.asScala.map(tag => tag.asString().getValue).toSeq
     val entryDate: String = doc.getString("date").split("T").head.replace("-", "")
     val da: String = doc.getString("date").split("T").head.replace("-", "").substring(0,6)
 
-    PrePrint(id, bd, instance, collection, typeTmp, pu, ti, doi, link, linkPdf, fullText, ab, "", entryDate, da)
+    PrePrint(id, bd, instance, collection, typeTmp, pu, ti, doi, link, linkPdf, fullText, ab, au, entryDate, da)
   }
 
   def generateXml(elements: Seq[PrePrint], pathOut: String): Try[Unit] = {
@@ -93,9 +95,13 @@ class ZBMedPrePrints{
     <field name={"ur_pdf"}>{fields.urPdf}</field>
     <field name={"fulltext"}>{fields.fulltext}</field>
     <field name={"ab"}>{fields.ab}</field>
-    <field name={"au"}>{fields.au}</field>
+    {fields.au.map(f => setFieldAuthors(f) )}
     <field name={"entry_date"}>{fields.entryDate}</field>
     <field name={"da"}>{fields.da}</field>
   </doc>
+  }
+
+  def setFieldAuthors(author: String): Elem = {
+    <field name={"au"}>{author}</field>
   }
 }
