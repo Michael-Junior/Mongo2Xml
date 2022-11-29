@@ -19,6 +19,7 @@
     <orderEntry type="library" name="sbt: org.mongodb:mongodb-driver-core:4.7.2:jar" level="project" />
     <orderEntry type="library" name="sbt: org.mongodb:mongodb-driver-reactivestreams:4.7.2:jar" level="project" />
     <orderEntry type="library" name="sbt: org.reactivestreams:reactive-streams:1.0.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang.modules:scala-xml_2.13:2.1.0:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.13.10:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-reflect:2.13.10:jar" level="project" />
   </component>

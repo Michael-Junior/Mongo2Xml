@@ -8,7 +8,9 @@ lazy val root = (project in file("."))
   )
 
 val mongoVersion = "4.7.2"
+val xmlVersion = "2.1.0"
 
 libraryDependencies ++= Seq(
   "org.mongodb.scala" %% "mongo-scala-driver" % mongoVersion,
+  "org.scala-lang.modules" %% "scala-xml" % xmlVersion,
 )
