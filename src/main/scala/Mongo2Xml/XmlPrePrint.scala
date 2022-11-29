@@ -1,89 +1,107 @@
 package Mongo2Xml
 
-import org.mongodb.scala.Document
+import org.mongodb.scala.bson.BsonArray
+import org.mongodb.scala.{Document, bson}
 
 import java.io.BufferedWriter
 import java.nio.file.{Files, Paths}
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
+import scala.xml.{Elem, PrettyPrinter, XML}
+import scala.collection.JavaConverters._
 
 
 case class PrePrint (id: String,
-                     bvs: String,
                      db: String,
                      instance: String,
                      collection: String,
                      pType: String,
-                     la: String,
+                     //la: String,                         //Não existe o dado
                      pu: String,
                      ti: String,
                      doi: String,
                      ur: String,
+                     urPdf: String,
                      fulltext: String,
                      ab: String,
-                     au: String,
-                     afiliacao_autor: String,
-                     entry_date: String,
-                     da: String,
-                     version_medrxiv_biorxiv: String,
-                     license: String,
-                     type_document_medrxiv_biorxiv: String,
-                     category_medrxiv_biorxiv: String)
+                     au: Seq[String],
+                     //afiliacaoAutor: String,             //Não existe o dado
+                     entryDate: String,
+                     da: String)
+                     //versionMedrxivBiorxiv: String,      //Não existe o dado
+                     // license: String,                   //Não existe o dado
+                     //typeDocumentMedrxivBiorxiv: String, //Não existe o dado
+                     //categoryMedrxivBiorxiv: String)     //Marcelo Verificando
 
 
 class ZBMedPrePrints{
 
-
-  def toXml(docsMongo: Seq[Document]): Try[Unit] = {
+  def toXml(docsMongo: Seq[Document], pathOut: String): Try[Unit] = {
     Try{
-      generateXml(docsMongo.map(f => mapElements(f)))
+      generateXml(docsMongo.map(f => mapElements(f)), pathOut) match {
+        case Success(_) => println()
+        case Failure(e) => println(e)
+      }
     }
   }
 
   def mapElements(doc: Document): PrePrint ={
-    val id: String = s"ppmedrxiv-${doc.getString("docLink").split("[/.]").reverse.head}"
-    val bvs: String = "regional"
-    val bd: String = "PREPRINT-MEDRXIV"
+
+    val id: String = s"ppzbmed-${doc.getString("docLink").split("[/.]").reverse.head}"
+    val bd: String = "PREPRINT-ZBMED"
     val instance: String = "regional"
     val collection: String = "09-preprints"
-    val pType: String = "preprint"
-    val la: String = "en"
-    val pu: String = "medRxiv"
+    val typeTmp: String = "preprint"
+    val pu: String = doc.getString("source")
     val ti: String = doc.getString("title").replace("<", "&lt;").replace(">","&gt;")
+    val doi: String = doc.getString("id")
+    val link: String = doc.getString("link")
+    val linkPdf: String = doc.getString("pdfLink")
+    val fullText: String = if (link.nonEmpty) "1" else ""
+    val ab: String = doc.getString("abstract").replace("<", "&lt;").replace(">","&gt;")
+    val au: Seq[String] = doc.get[BsonArray]("authors").get.getValues.asScala.map(tag => tag.asString().getValue).toSeq
+    val entryDate: String = doc.getString("date").split("T").head.replace("-", "")
+    val da: String = doc.getString("date").split("T").head.replace("-", "").substring(0,6)
 
-    PrePrint(id, bvs, bd, instance, collection, pType, la, pu, ti, "", "", "", "", "", "", "", "", "", "", "", "")
+    PrePrint(id, bd, instance, collection, typeTmp, pu, ti, doi, link, linkPdf, fullText, ab, au, entryDate, da)
   }
 
-  def generateXml(elements: Seq[PrePrint]): Unit = {
+  def generateXml(elements: Seq[PrePrint], pathOut: String): Try[Unit] = {
+    Try{
+      val xmlPath: BufferedWriter = Files.newBufferedWriter(Paths.get(pathOut))
+      val printer = new PrettyPrinter(80, 2)
+      val xmlFormat =
+        <add>
+          {elements.map(f => docToElem(f))}
+        </add>
 
-    val newXml: BufferedWriter = Files.newBufferedWriter(Paths.get("/home/oliveirmic/Documents/t.xml"))
-    for (element <- elements){
-      val xml_ppzbmed = {
-<doc>
-  <field name={"id"}>{element.id}</field>
-  <field name={"bvs"}>{element.bvs}</field>
-  <field name={"db"}>{element.db}</field>
-  <field name={"instance"}>{element.instance}</field>
-  <field name={"collection"}>{element.collection}</field>
-  <field name={"typeXml"}>{element.pType}</field>
-  <field name={"la"}>{element.la}</field>
-  <field name={"pu"}>{element.pu}</field>
-  <field name={"ti"}>{element.ti}</field>
-  <field name={"doi"}>{element.doi}</field>
-  <field name={"ur"}>{element.ur}</field>
-  <field name={"fulltext"}>{element.fulltext}</field>
-  <field name={"ab"}>{element.ab}</field>
-  <field name={"au"}>{element.au}</field>
-  <field name={"afiliacao_autor"}>{element.afiliacao_autor}</field>
-  <field name={"entry_date"}>{element.entry_date}</field>
-  <field name={"da"}>{element.da}</field>
-  <field name={"version_medrxiv_biorxiv"}>{element.version_medrxiv_biorxiv}</field>
-  <field name={"license"}>{element.license}</field>
-  <field name={"type_document_medrxiv_biorxiv"}>{element.type_document_medrxiv_biorxiv}</field>
-  <field name={"category_medrxiv_biorxiv"}>{element.category_medrxiv_biorxiv}</field>
-</doc>
-}
-
-      scala.xml.XML.write( newXml, xml_ppzbmed,  "UTF-8" ,  xmlDecl = true, null)
+      XML.write(xmlPath, XML.loadString(printer.format(xmlFormat)), "UTF-8", xmlDecl = true, null)
+      xmlPath.flush()
+      xmlPath.close()
     }
+  }
+
+  def docToElem(fields: PrePrint): Elem ={
+
+  <doc>
+    <field name={"id"}>{fields.id}</field>
+    <field name={"db"}>{fields.db}</field>
+    <field name={"instance"}>{fields.instance}</field>
+    <field name={"collection"}>{fields.collection}</field>
+    <field name={"type"}>{fields.pType}</field>
+    <field name={"pu"}>{fields.pu}</field>
+    <field name={"ti"}>{fields.ti}</field>
+    <field name={"doi"}>{fields.doi}</field>
+    <field name={"ur"}>{fields.ur}</field>
+    <field name={"ur_pdf"}>{fields.urPdf}</field>
+    <field name={"fulltext"}>{fields.fulltext}</field>
+    <field name={"ab"}>{fields.ab}</field>
+    {fields.au.map(f => setFieldAuthors(f) )}
+    <field name={"entry_date"}>{fields.entryDate}</field>
+    <field name={"da"}>{fields.da}</field>
+  </doc>
+  }
+
+  def setFieldAuthors(author: String): Elem = {
+    <field name={"au"}>{author}</field>
   }
 }
